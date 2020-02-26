@@ -1,5 +1,5 @@
 # Twitter Feed Summarizer
-The purpose of this program is to construct a video for a day of scrolling through a Twitter feed.
+The purpose of this program is to construct a video for a Twitter handle's tweets in one day.
 
 ## Summary
 
