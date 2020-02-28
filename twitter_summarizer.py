@@ -36,8 +36,8 @@ def get_tweets(handle):
     #num_tweets = 10
     tweets = api.user_timeline(screen_name=handle)
     array = []
-    tweets_for_csv = [tweet.text for tweet in tweets]
-    for i in tweets_for_csv:
+    tweets_for_images = [tweet.text for tweet in tweets]
+    for i in tweets_for_images:
         array.append(i)
     print(array)
 
