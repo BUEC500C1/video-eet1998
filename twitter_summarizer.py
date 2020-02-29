@@ -61,7 +61,12 @@ def tweet2image(array):
         file_num += 1
 
 #def image2video():
-
+'''
+    os.system(
+            "ffmpeg -r 1/3 -f image2 -s 174x300 -i " +
+            "_tweet%d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p " +
+            "_twitter_video.mp4")
+'''
 
 
 
