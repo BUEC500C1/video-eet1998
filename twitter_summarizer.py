@@ -48,15 +48,16 @@ def tweet2image(array):
     file_num = 1
     file_name = ""
     path = os.getcwd()
-    directory = create_image_directory()
+    #directory = create_image_directory()
 
-    for i in array:
+    for tweet in array:
         file_name = 'img_' + str(file_num) + '.png'
+        text_only = tweet.full_text
         #fnt = ImageFont.truetype('arial.ttf', 15)
         image = Image.new(mode="RGB", size=(200,70))
         draw = ImageDraw.Draw(image)
-        draw.text((10,10), str(i), fill=(255,255,0))
-        image.save(path+'/'+directory+'/'+file_name)
+        draw.text((10,10), text_only.encode('cp1252', 'ignore'), fill=(0,0,0))
+        image.save(path+file_name)
         file_num += 1
 
 #def image2video():
@@ -66,7 +67,7 @@ def tweet2image(array):
 
 if __name__ == '__main__':
     array = get_tweets("NatGeo")
-    tweet2image(array)
+    #tweet2image(array)
 
 
 
