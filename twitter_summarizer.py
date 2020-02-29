@@ -17,20 +17,23 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
-def create_directories():
+def create_image_directory():
     image_dir_name = 'ImagesDirectory'
-    video_dir_name = 'VideoDirectory'
     if not os.path.exists(image_dir_name):
-        os.mkdir(image_dir_name)
+        images_dir = os.mkdir(image_dir_name)
         print("Images directory created.")
     else:
         print("Images directory already exists.")
+    return images_dir
 
+def create_video_directory():
+    video_dir_name = 'VideoDirectory'
     if not os.path.exists(video_dir_name):
-        os.mkdir(video_dir_name)
+        video_dir = os.mkdir(video_dir_name)
         print("Video directory created.")
     else:
         print("Video directory already exists.")
+    return video_dir
 
 def get_tweets(handle):
     #num_tweets = 10
@@ -39,26 +42,31 @@ def get_tweets(handle):
     tweets_for_images = [tweet.text for tweet in tweets]
     for i in tweets_for_images:
         array.append(i)
-    print(array)
+    return array
 
 def tweet2image(array):
     file_num = 1
     file_name = ""
+    path = os.getcwd()
+    directory = create_image_directory()
+
     for i in array:
         file_name = 'img_' + str(file_num) + '.png'
-        fnt = ImageFont.truetype('arial.ttf', 15)
-        image = Image.new(mode="RGB", size=(200,70), color="red")
+        #fnt = ImageFont.truetype('arial.ttf', 15)
+        image = Image.new(mode="RGB", size=(200,70))
         draw = ImageDraw.Draw(image)
-        draw.text((10,10), str(i), font=fnt, fill=(255,255,0))
-        image.save(path + file_name)
+        draw.text((10,10), str(i), fill=(255,255,0))
+        image.save(path+'/'+directory+'/'+file_name)
         file_num += 1
 
-def image2video():
+#def image2video():
 
 
 
 
 if __name__ == '__main__':
-    get_tweets("NatGeo")
+    array = get_tweets("NatGeo")
+    tweet2image(array)
+
 
 
