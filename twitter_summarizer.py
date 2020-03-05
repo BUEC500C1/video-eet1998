@@ -19,6 +19,33 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
+class DownloadWorker(Thread):
+
+    def __init__(self, queue):
+        Thread.__init__(self)
+        self.queue = queue
+
+    def run(self):
+        while True:
+            # Do something
+        try:
+            # Do something
+        finally:
+            # Do something
+
+def main():
+    ts = time()
+    # Do stuff
+    # Create a queue to communicate with worker threads
+    queue = Queue()
+    # Create 4 worker threads
+    for x in range(4):
+        worker = DownloadWorker(queue)
+        # Setting daemon to True will let the main 
+        # thread exit even though the workers are blocking
+        worker.daemon = True
+        worker.start()
+
 def create_image_directory():
     image_dir_name = 'ImagesDirectory'
     if not os.path.exists(image_dir_name):
