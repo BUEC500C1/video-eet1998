@@ -1,27 +1,43 @@
 import os
-import queue
+from queue import Queue
+from threading import Thread
+from time import time
 import multiprocessing
-#import pandas as pd
-import csv
-import threading
 import tweepy
+import configparser
 import PIL as pillow
 from PIL import Image, ImageDraw, ImageFont
 
-# consumer keys and access tokens
-consumer_key = 'Ij5a4mBmBvNp4aiZ7F8uPhAWi'
-consumer_secret = 'DtrH2IGyq6KMds9zXzvsefd2knSee7K9xKqOdchvtTGuphCP2z'
-access_token = '931158103831216128-T4nbPvu1irazZ0t49MkZZqjT2xmQDSP'
-access_token_secret = 'y7WQZkM9jsiuQtmpopOc7rNctN910utOE3gDzyJaMYIgX'
 
-# Twitter API authorization and initilization
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
-api = tweepy.API(auth)
+class VideoWorker(Thread):
 
-class DownloadWorker(Thread):
+    '''
+    config = configparser.ConfigParser()
+    config.read('keys')
+    consumer_key = config.get('auth','consumer_key').strip()
+	consumer_secret = config.get('auth','consumer_secret').strip()
+	access_key = config.get('auth','access_token').strip()
+	access_secret = config.get('auth','access_secret').strip()
 
-    def __init__(self, queue):
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+	auth.set_access_token(access_key, access_secret)
+	api = tweepy.API(auth)
+    '''
+
+    # consumer keys and access tokens
+    consumer_key = 'Ij5a4mBmBvNp4aiZ7F8uPhAWi'
+    consumer_secret = 'DtrH2IGyq6KMds9zXzvsefd2knSee7K9xKqOdchvtTGuphCP2z'
+    access_token = '931158103831216128-T4nbPvu1irazZ0t49MkZZqjT2xmQDSP'
+    access_token_secret = 'y7WQZkM9jsiuQtmpopOc7rNctN910utOE3gDzyJaMYIgX'
+
+    # Twitter API authorization and initilization
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    api = tweepy.API(auth)
+
+
+
+    def __init__(self, path, queue):
         Thread.__init__(self)
         self.queue = queue
 
@@ -33,6 +49,10 @@ class DownloadWorker(Thread):
         finally:
             # Do something
 
+
+
+    
+
 def main():
     ts = time()
     # Do stuff
@@ -40,29 +60,14 @@ def main():
     queue = Queue()
     # Create 4 worker threads
     for x in range(4):
-        worker = DownloadWorker(queue)
+        worker = VideoWorker(queue)
         # Setting daemon to True will let the main 
         # thread exit even though the workers are blocking
         worker.daemon = True
         worker.start()
 
-def create_image_directory():
-    image_dir_name = 'ImagesDirectory'
-    if not os.path.exists(image_dir_name):
-        images_dir = os.mkdir(image_dir_name)
-        print("Images directory created.")
-    else:
-        print("Images directory already exists.")
-    return images_dir
 
-def create_video_directory():
-    video_dir_name = 'VideoDirectory'
-    if not os.path.exists(video_dir_name):
-        video_dir = os.mkdir(video_dir_name)
-        print("Video directory created.")
-    else:
-        print("Video directory already exists.")
-    return video_dir
+
 
 def get_tweets(handle):
     #num_tweets = 10
