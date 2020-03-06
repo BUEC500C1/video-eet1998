@@ -33,13 +33,9 @@ api = tweepy.API(auth)
 
 def get_tweets(handle):
     tweets = []
-    count = 0
-    while count < 10:
-        tweets_new = api.user_timeline(screen_name = handle)
-        tweets.extend(tweets_new)
-        count += 1
-    num = 0
-    #tweets_for_images = [tweet.text for tweet in tweets]
+    tweets_new = api.user_timeline(screen_name = handle, count=10)
+    tweets.extend(tweets_new)
+    num = 1
     for status in tweets:
         text_only = status.text
         tweet2image(text_only, handle, num)
@@ -48,25 +44,21 @@ def get_tweets(handle):
 def tweet2image(text_only, handle, num):
     if not os.path.isdir(handle + '_tweets'):
         os.mkdir(handle + '_tweets')
-        
-    file_num = 1
-    file_name = ""
-    i = 0
-    while i < len(text_only):
-        file_name = handle + '_tweets/' + handle + '_img_' + str(file_num) + '.png'
-        image = Image.new(mode="RGB", size=(200,70))
-        draw = ImageDraw.Draw(image)
-        draw.text((10,10), text_only.encode('cp1252', 'ignore'), fill=(0,0,0))
-        image.save(file_name)
-        file_num += 1
-    return image2video(handle)
+    file_name = handle + '_tweets/' + handle + '_img_' + str(num) + '.png'
+    font = ImageFont.truetype("Arial.ttf", 15)
+    image = Image.new('RGB', (203, 350), (255, 255, 255))
+    draw = ImageDraw.Draw(image)
+    draw.text((20,220), text_only, font = font, fill = (0,0,0))
+    image.save(file_name)
+
 
 def image2video(handle):
-    if not os.path.isdir('VideoWorker'):
-        os.mkdir('VideoWorker')
-    fileName = os.getcwd() + '/' + handle + '_tweets/' + '.png'
-    videoName = 'VideoWorker/' + handle + '.mp4'
-    ffmpeg.input(fileName, pattern_type = 'glob', framerate = 0.3).output(videoName).run()
+    if not os.path.isdir(handle + '_video'):
+        os.mkdir(handle + '_video')
+    file_name = os.getcwd() + '/' + handle + '_tweets/' + '.png'
+    video_name = 'video/' + handle + '.mp4'
+    ffmpeg.input(file_name, pattern_type = 'glob', framerate = 0.3).output(video_name).run()
 
 if __name__ == '__main__':
     get_tweets("@NatGeo")
+    @image2video("@NatGeo")
