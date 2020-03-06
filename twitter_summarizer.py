@@ -1,10 +1,12 @@
 import os
-from queue import Queue
+import queue
 from threading import Thread
 from time import time
 import multiprocessing
 import tweepy
 import configparser
+import ffmpeg
+import glob
 import PIL as pillow
 from PIL import Image, ImageDraw, ImageFont
 
@@ -41,44 +43,46 @@ class VideoWorker(Thread):
 
     def run(self):
         while True:
-            # Do something
-        try:
-            # Do something
-        finally:
-            # Do something
+            # Get work from the queue
+            task = self.queue.get()
+            try:
+                get_tweets(task)
+            finally:
+                self.queue.task_done()
 
     def get_tweets(self, handle):
-    #num_tweets = 10
-    tweets = api.user_timeline(screen_name=handle)
-    array = []
-    tweets_for_images = [tweet.text for tweet in tweets]
-    for i in tweets_for_images:
-        array.append(i)
-    return array
+        tweets = []
+        tweets_new = api.user_timeline(screen_name = handle, count = 10)
+        tweets.extend(tweets_new)
+        num = 0
+        #tweets_for_images = [tweet.text for tweet in tweets]
+        for status in tweets:
+            text_only = status.text
+            tweet2image(text_only, handle, num)
+            num += 1
 
-    def tweet2image(array):
-    file_num = 1
-    file_name = ""
-    path = os.getcwd()
-    #directory = create_image_directory()
+    def tweet2image(self, text_only, handle, num):
+        if not os.path.isdir(handle + '_tweets'):
+            os.mkdir(handle + '_tweets')
+        
+        file_num = 1
+        file_name = ""
+        i = 0
+        while i < len(text_only):
+            file_name = handle + '_tweets/' + handle + '_img_' + str(file_num) + '.png'
+            image = Image.new(mode="RGB", size=(200,70))
+            draw = ImageDraw.Draw(image)
+            draw.text((10,10), text_only.encode('cp1252', 'ignore'), fill=(0,0,0))
+            image.save(file_name)
+            file_num += 1
+        return self.image2video(handle)
 
-    for tweet in array:
-        file_name = 'img_' + str(file_num) + '.png'
-        text_only = tweet.full_text
-        #fnt = ImageFont.truetype('arial.ttf', 15)
-        image = Image.new(mode="RGB", size=(200,70))
-        draw = ImageDraw.Draw(image)
-        draw.text((10,10), text_only.encode('cp1252', 'ignore'), fill=(0,0,0))
-        image.save(path+file_name)
-        file_num += 1
-
-#def image2video():
-'''
-    os.system(
-            "ffmpeg -r 1/3 -f image2 -s 174x300 -i " +
-            "_tweet%d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p " +
-            "_twitter_video.mp4")
-''' 
+    def image2video(self, handle):
+        if not os.path.isdir('VideoWorker'):
+            os.mkdir('VideoWorker')
+        fileName = os.getcwd() + '/' + handle + '_tweets/' + '.png'
+        videoName = 'VideoWorker/' + handle + '.mp4'
+        ffmpeg.input(fileName, pattern_type = 'glob', framerate = 0.3).output(videoName).run()
 
 def main():
     ts = time()
