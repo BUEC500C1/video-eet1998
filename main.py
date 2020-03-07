@@ -29,8 +29,10 @@ def main():
         # thread exit even though the workers are blocking
         worker.daemon = True
         worker.start()
+    # Put tasks into queue
     for handle in handles:
         q.put(handle)
+    # Causes main thread to wait for the queue to finish processing all tasks
     q.join()
 
 
