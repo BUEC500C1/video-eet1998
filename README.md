@@ -12,3 +12,4 @@ The purpose of this program is to construct a video for a Twitter handle's tweet
 - https://www.geeksforgeeks.org/extraction-of-tweets-using-tweepy/
 - https://pythonprogramming.altervista.org/make-an-image-with-text-with-python/ 
 - https://www.toptal.com/python/beginners-guide-to-concurrency-and-parallelism-in-python
+- https://donjayamanne.github.io/pythonVSCodeDocs/docs/troubleshooting_linting/
