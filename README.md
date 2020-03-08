@@ -3,8 +3,6 @@ The purpose of this program is to construct a video for a Twitter handle's tweet
 
 ## Summary
 
-### User Stories
-
 ## How to Run This Code
 
 ## References
